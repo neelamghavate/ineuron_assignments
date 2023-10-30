@@ -46,3 +46,28 @@ NZ	1	1	0
 
 
 ===========================================================
+Meesho Interview Question
+
+create table products
+(
+product_id varchar(20) ,
+cost int
+);
+insert into products values ('P1',200),('P2',300),('P3',500),('P4',800);
+
+create table customer_budget
+(
+customer_id int,
+budget int
+);
+
+insert into customer_budget values (100,400),(200,800),(300,1500);
+with cte as(
+select *,
+sum(cost) over(order by cost) as cumm_cost
+from products)
+
+select cb.customer_id,cb.budget,count(1) as total_prod,group_concat(cte.product_id) as products
+from customer_budget cb
+LEFT join cte on cte.cumm_cost<cb.budget
+group by customer_id,budget
